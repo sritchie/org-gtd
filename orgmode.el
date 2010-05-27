@@ -38,6 +38,11 @@
 (setq org-timeline-show-empty-dates t)
 (setq org-insert-mode-line-in-empty-file t)
 
+;; Hides depends tasks in agenda view. C-c C-x o add the ordered property to a project.
+(setq org-enforce-todo-dependencies t)
+(setq org-agenda-dim-blocked-tasks 'invisible)
+(setq org-enforce-todo-checkbox-dependencies t)
+
 ;;
 (setq remember-annotation-functions '(org-remember-annotation))
 (setq remember-handler-functions '(org-remember-handler))
@@ -45,8 +50,10 @@
 
 (setq org-remember-templates
      '(
-      ("Todo" ?t "* TODO %^{Brief Description} %^g\n%?Added: %U" "~/org/GTD/gtd.org" "Tasks")
-      ("Private" ?p "\n* %^{topic} %T \n%i%?\n" "~/org/GTD/privnotes.org")
+       ("Inbox" ?i "* TODO %^{Brief Description} %^g\n%?Added: %U" "~/org/GTD/gtd.org" "Inbox")
+       ("Todo" ?t "* TODO %^{Brief Description} %^g\n%?Added: %U" "~/org/GTD/gtd.org" "Tasks")
+       ("Calendar" ?c "* %^{Brief Description} %^{Date}t\n%?Added: %U" "~/org/GTD/gtd.org" "Calendar")
+       ("Private" ?p "\n* %^{topic} %T \n%i%?\n" "~/org/GTD/privnotes.org")
       ))
 
 (define-key global-map [f9] 'remember)
@@ -57,19 +64,80 @@
         (ps-landscape-mode t)
         (htmlize-output-type 'css)))
 
+;; iCal Sync Settings
+(setq org-combined-agenda-icalendar-file
+      "~/Library/Calendars/OrgMode.ics")
+(add-hook 'org-after-save-iCalendar-file-hook
+          (lambda ()
+            (shell-command
+             "osascript -e 'tell application \"iCal\" to reload calendars'")))
+
+;; org stuck projects settings
+(setq org-stuck-projects
+(quote
+("+PROJECT/-DONE-CANCELLED" nil ("NEXT" "TODO" "STARTED" "WAITING" "APPT") "")
+))
+
+;; there is, of course, a far better way to do this, I just don't know it yet
 (setq org-agenda-custom-commands
 '(
+  
+("W" "Office & Work Lists"
+ ((agenda "" ((org-agenda-ndays 1)))
+  (tags-todo "OFFICE"
+             ((org-agenda-skip-function
+               (quote
+                (org-agenda-skip-entry-if 'scheduled 'deadline))
+               )))
+  (tags-todo "PHONE"
+             ((org-agenda-skip-function
+               (quote
+                (org-agenda-skip-entry-if 'scheduled 'deadline))
+               )))  
+  (tags-todo "EMAIL"
+             ((org-agenda-skip-function
+               (quote
+                (org-agenda-skip-entry-if 'scheduled 'deadline))
+               )))  
+  (tags-todo "COMPUTER"
+             ((org-agenda-skip-function
+               (quote
+                (org-agenda-skip-entry-if 'scheduled 'deadline))
+               )))  
+  (tags-todo "EMACS"
+             ((org-agenda-skip-function
+               (quote
+                (org-agenda-skip-entry-if 'scheduled 'deadline))
+               )))  
+  ))
 
-("P" "Projects"   
-((tags "PROJECT")))
+("H" "Home List"
+ ((agenda "" ((org-agenda-ndays 1)))
+  (tags-todo "HOME" ((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline))))
+             )
+  (tags-todo "COMPUTER"((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline))))
+             )
+  (tags-todo "ONLINE"((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline))))
+             )
+  (tags-todo "READING" ((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline))))
+             )
+))
 
-("H" "Office and Home Lists"
-     ((agenda)
-          (tags-todo "OFFICE")
-          (tags-todo "HOME")
-          (tags-todo "COMPUTER")
-          (tags-todo "SPORTS")
-          (tags-todo "READING")))
+("E" "Errands"
+ ((tags-todo "ERRANDS")
+  (tags-todo "PHONE")
+  (tags-todo "VIRGINIA")
+  (tags-todo "ONLINE"
+             ((org-agenda-skip-function
+               (quote
+                (org-agenda-skip-entry-if 'scheduled 'deadline))
+               )))
+  ))
+
+("T" "People Agendas"
+ ((tags-todo "AGENDA")
+  (todo "WAITING")))
+
 
 ("D" "Daily Action List"
      (
@@ -78,16 +146,15 @@
                        (quote ((agenda time-up priority-down tag-up) )))
                       (org-deadline-warning-days 0)
                       ))))
+
 ("A" "Tasks to be Archived" tags "LEVEL=2/DONE|CANCELLED" nil)
 ))
-
 
 (defun gtd ()
     (interactive)
     (find-file "~/org/GTD/gtd.org")
 )
 (global-set-key (kbd "C-c g") 'gtd)
-
 
 (add-hook 'org-agenda-mode-hook 'hl-line-mode)
 
@@ -97,8 +164,3 @@
 (global-set-key "\C-x\C-r" 'prefix-region)
 (global-set-key "\C-x\C-l" 'goto-line)
 (global-set-key "\C-x\C-y" 'copy-region-as-kill)
-
- ;; Changes all yes/no questions to y/n type
-(fset 'yes-or-no-p 'y-or-n-p)
-
-(set-variable 'confirm-kill-emacs 'yes-or-no-p)
