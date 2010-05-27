@@ -25,6 +25,37 @@
 ;; file of Charles Cave to run org-mode
 ;; Modified by Sam Ritchie, 2010, uploaded to GitHub
 
+;; Tweaked from custom set variables
+(setq org-agenda-files (quote ("~/org/GTD/gtd.org")))
+(setq org-agenda-ndays 7)
+(setq org-agenda-repeating-timestamp-show-all nil)
+(setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-show-all-dates t)
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-sorting-strategy (quote ((agenda time-up priority-down tag-up) (todo tag-up))))
+(setq org-agenda-start-on-weekday nil)
+(setq org-agenda-todo-ignore-deadlines t)
+(setq org-agenda-todo-ignore-scheduled t)
+(setq org-agenda-todo-ignore-with-date t)
+(setq org-agenda-window-setup (quote other-window))
+(setq org-deadline-warning-days 7)
+(setq org-export-html-style "<link rel=\"stylesheet\" type=\"text/css\" href=\"mystyles.css\">")
+(setq org-fast-tag-selection-single-key nil)
+(setq org-log-done (quote (done)))
+(setq org-refile-targets (quote (("gtd.org" :maxlevel . 1) ("someday.org" :level . 2))))
+(setq org-reverse-note-order nil)
+(setq org-tags-column -78)
+(setq org-tags-match-list-sublevels nil)
+(setq org-use-fast-todo-selection t)
+(setq org-use-tag-inheritance nil)
+
+;; Remember mode stuff
+(org-remember-insinuate)
+(setq org-directory "~/org")
+(setq org-default-notes-file (concat org-directory "/GTD/journal.org"))
+(define-key global-map "\C-cr" 'org-remember)
+
 ;; Set the default tab width. Not sure if I like this.
 (setq-default tab-width 3)
 
