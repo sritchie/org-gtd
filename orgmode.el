@@ -81,8 +81,7 @@
 
 (setq org-remember-templates
      '(
-       ("Inbox" ?i "* TODO %^{Brief Description} %^g\n%?Added: %U" "~/org/GTD/gtd.org" "Inbox")
-       ("Todo" ?t "* TODO %^{Brief Description} %^g\n%?Added: %U" "~/org/GTD/gtd.org" "Tasks")
+       ("Todo" ?t "* TODO %^{Brief Description} %^g\n%?Added: %U" "~/org/GTD/gtd.org" "Inbox")
        ("Calendar" ?c "* %^{Brief Description} %^{Date}t\n%?Added: %U" "~/org/GTD/gtd.org" "Calendar")
        ("Private" ?p "\n* %^{topic} %T \n%i%?\n" "~/org/GTD/privnotes.org")
       ))
@@ -97,7 +96,7 @@
 
 ;; iCal Sync Settings
 (setq org-combined-agenda-icalendar-file
-      "~/Library/Calendars/OrgMode.ics")
+      "/Library/WebServer/Documents/OrgMode.ics")
 (add-hook 'org-after-save-iCalendar-file-hook
           (lambda ()
             (shell-command
@@ -163,7 +162,7 @@
                (quote
                 (org-agenda-skip-entry-if 'scheduled 'deadline))
                )))
-  ))
+  ) nil ("errands.html"))
 
 ("T" "People Agendas"
  ((tags-todo "AGENDA")
@@ -179,6 +178,31 @@
                       ))))
 
 ("A" "Tasks to be Archived" tags "LEVEL=2/DONE|CANCELLED" nil)
+
+("P" "Printed agenda"
+ ((agenda "" ((org-agenda-ndays 7)                      ;; overview of appointments
+              (org-agenda-start-on-weekday nil)         ;; calendar begins today
+              (org-agenda-repeating-timestamp-show-all t)
+              (org-agenda-entry-types '(:timestamp :sexp))))
+  (agenda "" ((org-agenda-ndays 1)                      ;; daily agenda
+              (org-deadline-warning-days 7)             ;; 7 day advanced warning for deadlines
+              (org-agenda-sorting-strategy '(tag-up priority-down))              
+              (org-agenda-todo-keyword-format "[ ]")
+              (org-agenda-scheduled-leaders '("" ""))
+              (org-agenda-prefix-format "%t%s")))
+  (todo "TODO"                                          ;; todos sorted by context
+        ((org-agenda-prefix-format "[ ]:")
+         (org-agenda-sorting-strategy '(tag-up priority-down))
+         (org-agenda-todo-keyword-format "")
+         (org-agenda-overriding-header "\nTasks by Context\n------------------\n"))))
+ ((org-agenda-with-colors nil)
+  (org-agenda-compact-blocks t)
+  ;; (org-agenda-remove-tags t)
+  ;; (ps-number-of-columns 2)
+  ;; (ps-landscape-mode t)
+)
+ ("~/agenda.html"))
+
 ))
 
 (defun gtd ()
