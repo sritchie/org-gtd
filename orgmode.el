@@ -50,6 +50,10 @@
 (setq org-use-fast-todo-selection t)
 (setq org-use-tag-inheritance nil)
 
+
+;; Keybindings for org-mode
+;;(define-key org-mode-ma (kbd "<C-return>") 'org-insert-heading-respect-content)
+
 ;; Remember mode stuff
 (org-remember-insinuate)
 (setq org-directory "~/org")
@@ -130,10 +134,7 @@
                 (org-agenda-skip-entry-if 'scheduled 'deadline))
                )))  
   (tags-todo "COMPUTER"
-             ((org-agenda-skip-function
-               (quote
-                (org-agenda-skip-entry-if 'scheduled 'deadline))
-               )))  
+             ((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline)))))  
   (tags-todo "EMACS"
              ((org-agenda-skip-function
                (quote
@@ -154,15 +155,15 @@
 ))
 
 ("E" "Errands"
- ((tags-todo "ERRANDS")
-  (tags-todo "PHONE")
-  (tags-todo "VIRGINIA")
+ ((tags-todo "ERRANDS"((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline)))))
+  (tags-todo "PHONE")  
+  (tags-todo "VIRGINIA"((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline)))))
   (tags-todo "ONLINE"
              ((org-agenda-skip-function
                (quote
                 (org-agenda-skip-entry-if 'scheduled 'deadline))
                )))
-  ) nil ("errands.html"))
+  ))
 
 ("T" "People Agendas"
  ((tags-todo "AGENDA")
@@ -190,8 +191,10 @@
               (org-agenda-todo-keyword-format "[ ]")
               (org-agenda-scheduled-leaders '("" ""))
               (org-agenda-prefix-format "%t%s")))
+ 
   (todo "TODO"                                          ;; todos sorted by context
         ((org-agenda-prefix-format "[ ]:")
+         (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
          (org-agenda-sorting-strategy '(tag-up priority-down))
          (org-agenda-todo-keyword-format "")
          (org-agenda-overriding-header "\nTasks by Context\n------------------\n"))))
