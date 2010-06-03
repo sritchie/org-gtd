@@ -85,6 +85,7 @@
 
 (setq org-remember-templates
      '(
+       ("Agenda" ?a "* TODO %^{Brief Description} %^g:AGENDA:\n%?Added: %U" "~/org/GTD/gtd.org" "Inbox")
        ("Todo" ?t "* TODO %^{Brief Description} %^g\n%?Added: %U" "~/org/GTD/gtd.org" "Inbox")
        ("Calendar" ?c "* %^{Brief Description} %^{Date}t\n%?Added: %U" "~/org/GTD/gtd.org" "Calendar")
        ("Private" ?p "\n* %^{topic} %T \n%i%?\n" "~/org/GTD/privnotes.org")
@@ -128,6 +129,16 @@
                (quote
                 (org-agenda-skip-entry-if 'scheduled 'deadline))
                )))  
+  (tags-todo "EMACS"
+             ((org-agenda-skip-function
+               (quote
+                (org-agenda-skip-entry-if 'scheduled 'deadline))
+               )))  
+  (tags-todo "XCODE"
+             ((org-agenda-skip-function
+               (quote
+                (org-agenda-skip-entry-if 'scheduled 'deadline))
+               )))  
   (tags-todo "EMAIL"
              ((org-agenda-skip-function
                (quote
@@ -135,11 +146,6 @@
                )))  
   (tags-todo "COMPUTER"
              ((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline)))))  
-  (tags-todo "EMACS"
-             ((org-agenda-skip-function
-               (quote
-                (org-agenda-skip-entry-if 'scheduled 'deadline))
-               )))  
   ))
 
 ("H" "Home List"
@@ -158,6 +164,7 @@
  ((tags-todo "ERRANDS"((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline)))))
   (tags-todo "PHONE")  
   (tags-todo "VIRGINIA"((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline)))))
+  (tags-todo "PRINCETON"((org-agenda-skip-function (quote (org-agenda-skip-entry-if 'scheduled 'deadline)))))
   (tags-todo "ONLINE"
              ((org-agenda-skip-function
                (quote
@@ -166,7 +173,7 @@
   ))
 
 ("T" "People Agendas"
- ((tags-todo "AGENDA")
+ ((tags-todo "AGENDA"((org-agenda-sorting-strategy '(tag-up priority-down))))
   (todo "WAITING")))
 
 
@@ -205,7 +212,6 @@
   ;; (ps-landscape-mode t)
 )
  ("~/agenda.html"))
-
 ))
 
 (defun gtd ()
